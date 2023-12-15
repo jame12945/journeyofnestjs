@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Body , Controller , Get ,HttpException,HttpStatus,Param ,ParseBoolPipe,ParseIntPipe,Post , Query ,Req ,Res, UsePipes, ValidationPipe } from '@nestjs/common'
+import { Body , Controller , Get ,HttpException,HttpStatus,Param ,ParseBoolPipe,ParseIntPipe,Post , Query ,Req ,Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common'
 import { CreateUserDto } from '../dtos/CreateUser.dto'
 import { UsersService } from '../services/users/users.service'
+import { ValidateCreateUserPipe } from '../pipes/validate-create-user/validate-create-user.pipe'
+import { AuthGuard } from '../guards/auth/auth.guard'
 
 
 @Controller('users')
+
 export class UsersController{
   constructor(private userService: UsersService ){}
   //MiddleWare FUnction call before actual route handler Example: Before Call getUsers,getUserByService,getUserById  
@@ -17,6 +20,7 @@ export class UsersController{
   }
 
   @Get('service')
+  @UseGuards(AuthGuard)
   getUserByService(){
     console.log(this.userService.fetchUsers())
     return this.userService.fetchUsers();
@@ -25,8 +29,10 @@ export class UsersController{
   //Use Validation for check argrument body decorator  Example: Decorator ->   @IsNotEmpty() ,@Query ,@Post
   @Post('create')
   @UsePipes(new ValidationPipe())
-  createUser(@Body() userData: CreateUserDto) { 
-    console.log(userData)
+  createUser(@Body(ValidateCreateUserPipe) userData: CreateUserDto) { 
+    // console.log(userData)
+    // toPrecision specific number type if i type string the error happen but if use pipe convert its ok
+    console.log(userData.age.toPrecision())
     return this.userService.createUsers(userData)
     // return{}
 

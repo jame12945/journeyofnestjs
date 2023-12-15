@@ -1,6 +1,8 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber } from "class-validator";
 
 export class CreateUserDto {
     //specific each Vallidation Type
@@ -9,5 +11,7 @@ export class CreateUserDto {
     @IsEmail()
     @IsNotEmpty()
     email: string;
+    @IsNotEmpty()
+    age:number
 
 }
